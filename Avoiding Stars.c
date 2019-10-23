@@ -66,6 +66,35 @@ void _Console_Size(int _col, int _lines)
 	sprintf(setText, "mode con cols=%d lines=%d", _col, _lines);
 	system(setText);
 }
+
+void Check_Music(void)
+{
+	FILE* bg = fopen("BG.wav", "rb");
+	FILE* crash = fopen("crash.wav", "rb");
+	FILE* ending = fopen("ending.wav", "rb");
+
+	//음원 파일이 있는지 확인
+	if (bg == NULL || crash == NULL || ending == NULL)
+	{
+		//혹, NULL인 경우에는 초기화가 안 되는 문제 방지
+		if (bg != NULL)
+		fclose(bg);
+		if (crash != NULL)
+		fclose(crash);
+		if (ending != NULL)
+		fclose(ending);
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
+		printf("음원 파일이 부족합니다. 잠시 뒤 이동되는 사이트에서 다운받아주세요.\n\n\n");
+
+		Sleep(2000);
+		system("start https://github.com/ZENOVERS/Avoiding-the-stars");
+
+		system("pause");
+
+		exit(0);
+	}
+}
 //====================================================
 
 
@@ -164,6 +193,7 @@ void Game_Running(void);
 
 int main(void)
 {
+	Check_Music(); //모든 음악이 있는지 확인
 	PlaySound(TEXT("BG.wav"), NULL, SND_ASYNC | SND_LOOP);
 
 	Setting(); //기본 값들
@@ -498,7 +528,7 @@ void Ending_Menu(void)
 		printf("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
 		KeyInput();
 
-		printf("\n\n\n      \t\t     [ %d ] 스테이지\n\n\n\n\n점수 : %d\t\t   생존 점수(시간) : %f", g_stage, g_score, gap - pauseTime);
+		printf("\n\n\n      \t\t     [ %d ] 스테이지\n\n\n\n\n점수 : %d\t\t   생존 점수(시간) : %f", g_stage, g_score, (gap - pauseTime));
 
 		printf("\n\n\n\n\n\n\n     다시 도전하시겠습니까?   꾹 눌러주세요( Y / N )");
 
